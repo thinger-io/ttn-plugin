@@ -1,0 +1,137 @@
+<script>
+    'use strict';
+    app.controller('AppController', ['$scope', 'AuthService', 'API_HOST', '$resource', function ($scope, AuthService, API_HOST, $resource) {
+        const app_url =  API_HOST + '/v3/users/' + AuthService.user + '/applications/ttn';
+
+        const AppSettings = $resource(app_url + "/properties/settings", null, {set: {  method: 'PUT', transformRequest: function(body){
+                    delete body.modified;
+                    delete body.property;
+                    return angular.toJson(body);
+                }}});
+
+        AppSettings.get().$promise.then(function(settings) {
+            $scope.settings = settings;
+        },function error(){
+            $scope.settings = new AppSettings();
+            $scope.settings.value = {};
+        });
+
+        function showError(response){
+            $scope.error_code = response.status;
+            if(response.status===0 || response.status===-1){
+                $scope.error_message = "connection refused";
+            }else if('data' in response && 'error' in response.data){
+                $scope.error_message = response.data.error.message;
+            }else{
+                $scope.error_message = 'unknown';
+            }
+        }
+
+        $scope.save = function(){
+            $scope.save_state = 1;
+            $scope.settings.$set().then(function(){
+                $scope.save_state = 2;
+            },function(error){
+                $scope.save_state = 3;
+                showError(error);
+            });
+        };
+    }]);
+</script>
+<div class="panel panel-default" ng-controller="AppController">
+    <div class="panel-heading font-bold">
+        <i class="fa fa-cog m-r-xs"></i> Settings
+    </div>
+    <div class="panel-body">
+        <form id="form-save-callback" class="form-validation" ng-submit="save()">
+            <uib-tabset class="tab-container m-b-none" ng-disabled="save_state==1">
+                <uib-tab heading="Settings">
+                    <div class="form-group">
+                        <label><i class="fa fa-rocket m-r-xs  text-muted"></i>Device Auto provisioning <i class="fa fa-info-circle text-muted" uib-popover="Automatically " popover-trigger="'mouseenter'"></i></label>
+                        <div class="input-group">
+                    <span class="input-group-addon">
+                        <input type="checkbox" ng-model="settings.value.auto_device_provisioning" ng-change="saveToken(token.enabled)">
+                    </span>
+                            <input type="text" placeholder="Device prefix" class="form-control" ng-model="settings.value.auto_device_provisioning_prefix"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa fa-database m-r-xs text-muted"></i>Bucket Auto Provisioning <i class="fa fa-info-circle text-muted" uib-popover="Create a data bucket for the devices when required" popover-trigger="'mouseenter'"></i></label>
+                        <div class="input-group">
+                    <span class="input-group-addon">
+                        <input type="checkbox" ng-model="settings.value.auto_bucket_provisioning" ng-change="saveToken(token.enabled)">
+                    </span>
+                            <input type="text" placeholder="Bucket prefix" class="form-control" ng-model="settings.value.auto_bucket_provisioning_prefix"/>
+                        </div>
+                    </div>
+                    <div class="form-group m-b-xs">
+                        <label><i class="fa fa-lock m-r-xs text-muted"></i>Application Authorization <i class="fa fa-info-circle text-muted" uib-popover="Generate an authorization, so this application can issue requests" popover-trigger="'mouseenter'"></i></label>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <input type="checkbox" ng-model="token.enabled" ng-change="saveToken(token.enabled)">
+                            </span>
+                            <input type="text" class="form-control" ng-model="show_token.auth"/>
+                        </div>
+                    </div>
+                </uib-tab>
+                <uib-tab heading="Device Properties">
+                    <div class="form-group">
+                        <label><i class="fa fa-map-marked m-r-xs text-muted"></i>Update device location <i class="fa fa-info-circle text-muted" uib-popover="Automatically crete new data buckets for storing input data" popover-trigger="'mouseenter'"></i></label>
+                        <div class="m-t-xs">
+                            <label class="i-switch bg-success">
+                                <input type="checkbox" ng-model="settings.value.update_device_location">
+                                <i></i>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa fa-microchip m-r-xs text-muted"></i>Save hardware serial <i class="fa fa-info-circle text-muted" uib-popover="Automatically crete new data buckets for storing input data" popover-trigger="'mouseenter'"></i></label>
+                        <div class="m-t-xs">
+                            <label class="i-switch bg-success">
+                                <input type="checkbox" ng-model="settings.value.save_hardware_serial">
+                                <i></i>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa fa-download m-r-xs text-muted"></i>Save downlink URL <i class="fa fa-info-circle text-muted" uib-popover="Automatically crete new data buckets for storing input data" popover-trigger="'mouseenter'"></i></label>
+                        <div class="m-t-xs">
+                            <label class="i-switch bg-success">
+                                <input type="checkbox" ng-model="settings.value.save_downlink_url">
+                                <i></i>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fa fa-list-ul m-r-xs text-muted"></i> Save metadata <i class="fa fa-info-circle text-muted" uib-popover="Automatically crete new data buckets for storing input data" popover-trigger="'mouseenter'"></i></label>
+                        <div class="m-t-xs">
+                            <label class="i-switch bg-success">
+                                <input type="checkbox" ng-model="settings.value.save_metadata">
+                                <i></i>
+                            </label>
+                        </div>
+                    </div>
+                </uib-tab>
+                <uib-tab heading="TTN Integration">
+                    <div class="font-bold m-b-xs"><i class="fa fa-link"></i> Method</div>
+                    <pre class="bg-black text-white">POST</pre>
+                    <div class="font-bold m-b-xs"><i class="fa fa-link"></i> URL</div>
+                    <pre class="bg-black text-white">{{url}}</pre>
+                    <div class="form-group">
+                        <label><i class="fa fa-lock m-r-xs text-muted"></i>Authorization Header<i class="fa fa-info-circle text-muted" uib-popover="Generate an authorization, so this application can issue requests" popover-trigger="'mouseenter'"></i></label>
+                        <div class="input-group">
+                    <span class="input-group-addon">
+                        <input type="checkbox" ng-model="token.enabled" ng-change="saveToken(token.enabled)">
+                    </span>
+                            <input type="text" class="form-control" ng-model="show_token.auth"/>
+                        </div>
+                    </div>
+                </uib-tab>
+            </uib-tabset>
+        </form>
+        <pre class="alert alert-danger m-t m-b-none" ng-show="save_state==3"><strong><i class="fas fa-thumbs-down"></i> Ooops!</strong> Cannot process your request. Error {{error_code}} ({{error_message}})</pre>
+    </div>
+    <footer class="panel-footer text-left bg-light lter">
+        <button class="btn btn-success btn-addon" type="submit" form="form-save-callback" ng-disabled="fetch_error || save_state==1"><i><span ng-class="{'fa fa-check': save_state!=1, 'fa fa-spinner fa-pulse' : save_state==1}"></span></i>Save</button>
+    </footer>
+</div>

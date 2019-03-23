@@ -1,0 +1,46 @@
+{
+  "name": "thinger-ttn",
+  "version": "1.0.0",
+  "description": "Application for handling TTN integration.",
+  "author": "Alvaro Luis Bustamante",
+  "license": "MIT",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/thinger-io/thinger-ttn.git",
+    "directory": "backend"
+  },
+  "main": "app.js",
+  "config": {
+    "imageRepo": "thinger/ttn-app",
+    "imageName": "thinger-ttn-app",
+    "imagePort": "3000"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "docker:build": "cross-conf-env docker image build . -t $npm_package_config_imageRepo:$npm_package_version",
+    "postdocker:build": "npm run docker:tag",
+    "docker:tag": " cross-conf-env docker image tag $npm_package_config_imageRepo:$npm_package_version $npm_package_config_imageRepo:latest",
+    "docker:run": "run-s -c docker:clean docker:runHelper",
+    "docker:runHelper": "cross-conf-env docker run -e NODE_ENV=local --name $npm_package_config_imageName -d -p $npm_package_config_imagePort:3000 $npm_package_config_imageRepo",
+    "predocker:publish": "echo Attention! Ensure `docker login` is correct.",
+    "docker:publish": "cross-conf-env docker image push $npm_package_config_imageRepo:$npm_package_version",
+    "postdocker:publish": "cross-conf-env docker image push $npm_package_config_imageRepo:latest",
+    "docker:clean": "cross-conf-env docker rm -f $npm_package_config_imageName",
+    "predocker:taillogs": "echo Web Server Logs:",
+    "docker:taillogs": "cross-conf-env docker logs -f $npm_package_config_imageName",
+    "docker:open:win": "echo Trying to launch on Windows && timeout 2 && start http://localhost:%npm_package_config_imagePort%",
+    "docker:open:mac": "echo Trying to launch on MacOS && sleep 2 && URL=http://localhost:$npm_package_config_imagePort && open $URL",
+    "docker:debugmessage": "echo Docker Debug Completed Successfully! Hit Ctrl+C to terminate log tailing.",
+    "predocker:debug": "run-s docker:build docker:run",
+    "docker:debug": "run-s -cs docker:open:win docker:open:mac docker:debugmessage docker:taillogs"
+  },
+  "dependencies": {
+    "express": "^4.16.4",
+    "fs": "0.0.1-security",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "cross-conf-env": "^1.1.2",
+    "npm-run-all": "^4.1.5"
+  }
+}
