@@ -1,22 +1,22 @@
 {
-  "name": "thinger-ttn",
+  "name": "ttn",
   "version": "1.0.0",
-  "description": "Application for handling TTN integration.",
+  "description": "Plugin for handling TTN integration.",
   "author": "Alvaro Luis Bustamante",
   "license": "MIT",
   "repository": {
     "type" : "git",
-    "url" : "https://github.com/thinger-io/thinger-ttn.git",
-    "directory": "backend"
+    "url" : "https://github.com/thinger-io/ttn-plugin.git",
+    "directory": "plugin"
   },
-  "main": "app.js",
+  "main": "main.js",
   "config": {
-    "imageRepo": "thinger/ttn-app",
-    "imageName": "thinger-ttn-app",
+    "imageRepo": "thinger/ttn-plugin",
+    "imageName": "thinger-ttn-plugin",
     "imagePort": "3000"
   },
   "scripts": {
-    "start": "node app.js",
+    "start": "node main.js",
     "docker:build": "cross-conf-env docker image build . -t $npm_package_config_imageRepo:$npm_package_version",
     "postdocker:build": "npm run docker:tag",
     "docker:tag": " cross-conf-env docker image tag $npm_package_config_imageRepo:$npm_package_version $npm_package_config_imageRepo:latest",

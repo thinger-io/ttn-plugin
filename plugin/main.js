@@ -16,5 +16,7 @@ app.post('/downlink', function(req, res) {
 });
 
 app.listen(3000, function () {
-    console.log('TTN Application is Running!');
+    console.log('TTN Plugin is Running!');
+    console.log("HOST=" + HOST);
+    console.log("API_KEY=" + API_KEY);
 });

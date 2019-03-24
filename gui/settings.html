@@ -1,7 +1,7 @@
 <script>
     'use strict';
     app.controller('AppController', ['$scope', 'AuthService', 'API_HOST', '$resource', function ($scope, AuthService, API_HOST, $resource) {
-        const app_url =  API_HOST + '/v3/users/' + AuthService.user + '/applications/ttn';
+        const app_url =  API_HOST + '/v1/users/' + AuthService.user + '/plugins/ttn';
 
         const AppSettings = $resource(app_url + "/properties/settings", null, {set: {  method: 'PUT', transformRequest: function(body){
                     delete body.modified;
