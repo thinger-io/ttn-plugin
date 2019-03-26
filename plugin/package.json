@@ -5,8 +5,8 @@
   "author": "Alvaro Luis Bustamante",
   "license": "MIT",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/thinger-io/ttn-plugin.git",
+    "type": "git",
+    "url": "https://github.com/thinger-io/ttn-plugin.git",
     "directory": "plugin"
   },
   "main": "main.js",
@@ -35,9 +35,8 @@
     "docker:debug": "run-s -cs docker:open:win docker:open:mac docker:debugmessage docker:taillogs"
   },
   "dependencies": {
-    "express": "^4.16.4",
-    "fs": "0.0.1-security",
-    "request": "^2.88.0"
+    "axios": "^0.18.0",
+    "express": "^4.16.4"
   },
   "devDependencies": {
     "cross-conf-env": "^1.1.2",

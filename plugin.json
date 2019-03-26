@@ -1,4 +1,5 @@
 {
+  "_id" : "ttn",
   "plugin" : "ttn",
   "version" : "1.0.0",
   "description" : "Plugin for handling TTN integration",
@@ -21,7 +22,7 @@
           "*" : {
             "action" : [
               "CreateDevice",
-              "UpdateDeviceCallback",
+              "SetDeviceProperty",
               "CallDeviceCallback"
             ]
           }
