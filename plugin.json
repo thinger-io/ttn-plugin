@@ -1,5 +1,4 @@
 {
-  "_id" : "ttn",
   "plugin" : "ttn",
   "version" : "1.0.0",
   "description" : "Plugin for handling TTN integration",
@@ -14,7 +13,7 @@
     "description" : "TTN Integration",
     "image" : "https://pbs.twimg.com/profile_images/1006927473022521350/_l5OJ7Q3_400x400.jpg"
   },
-  "access_tokens" : {
+  "tokens" : {
     "ttn_plugin" : {
       "name" : "Access from TTN plugin to thinger.io account",
       "allow" : {
