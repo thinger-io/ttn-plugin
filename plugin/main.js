@@ -4,15 +4,17 @@ const app = express();
 
 app.use(express.json());
 
-const API_HOST = process.env.API_HOST;
-const ACCESS_TOKEN = process.env.TOKEN_ttn_plugin;
-const USER_ID = process.env.USER_ID;
+const HOST      = process.env.THINGER_HOST;
+const USER      = process.env.THINGER_USER;
+const PLUGIN    = process.env.THINGER_PLUGIN;
+const VERSION   = process.env.THINGER_PLUGIN_VERSION;
+const TOKEN     = process.env.THINGER_TOKEN_TTN_PLUGIN;
 
 function createDevice(device_id){
     return axios({
         method: 'post',
-        url:  `${API_HOST}/v1/users/${USER_ID}/devices`,
-        headers: {"Authorization" : `Bearer ${ACCESS_TOKEN}`},
+        url:  `${HOST}/v1/users/${USER}/devices`,
+        headers: {"Authorization" : `Bearer ${TOKEN}`},
         data: {
             device_id: device_id,
             device_type: 'HTTP',
@@ -24,8 +26,8 @@ function createDevice(device_id){
 function createBucket(bucket_id){
     return axios({
         method: 'post',
-        url:  `${API_HOST}/v1/users/${USER_ID}/buckets`,
-        headers: {"Authorization" : `Bearer ${ACCESS_TOKEN}`},
+        url:  `${HOST}/v1/users/${USER}/buckets`,
+        headers: {"Authorization" : `Bearer ${TOKEN}`},
         data: {
             bucket: bucket_id,
             name: bucket_id,
@@ -39,8 +41,8 @@ function createBucket(bucket_id){
 function callDeviceCallback(device_id, payload){
     return axios({
         method: 'post',
-        url:  `${API_HOST}/v3/users/${USER_ID}/devices/${device_id}/callback`,
-        headers: {"Authorization" : `Bearer ${ACCESS_TOKEN}`},
+        url:  `${HOST}/v3/users/${USER}/devices/${device_id}/callback`,
+        headers: {"Authorization" : `Bearer ${TOKEN}`},
         data: payload
     });
 }
@@ -48,8 +50,8 @@ function callDeviceCallback(device_id, payload){
 function setDeviceProperties(device_id, properties){
     return axios({
         method: 'post',
-        url:  `${API_HOST}/v3/users/${USER_ID}/devices/${device_id}/properties`,
-        headers: {"Authorization" : `Bearer ${ACCESS_TOKEN}`},
+        url:  `${HOST}/v3/users/${USER}/devices/${device_id}/properties`,
+        headers: {"Authorization" : `Bearer ${TOKEN}`},
         data: properties
     });
 }
@@ -147,7 +149,9 @@ app.get('/', function(req, res){
 
 app.listen(3000, function () {
     console.log('TTN Plugin is Running!');
-    console.log("HOST=" + API_HOST);
-    console.log("API_KEY=" + ACCESS_TOKEN);
-    console.log("USER_ID=" + USER_ID);
+    console.log("HOST=" + HOST);
+    console.log("TOKEN=" + TOKEN);
+    console.log("USER=" + USER);
+    console.log("PLUGIN=" + PLUGIN);
+    console.log("VERSION=" + VERSION);
 });
