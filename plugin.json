@@ -1,5 +1,5 @@
 {
-  "plugin" : "ttn",
+  "name" : "ttn",
   "version" : "1.0.0",
   "description" : "Plugin for handling TTN integration",
   "author" : "Alvaro Luis Bustamante",
@@ -18,37 +18,21 @@
       "name" : "Access from TTN plugin to thinger.io account",
       "allow" : {
         "Device" : {
-          "*" : {
-            "action" : [
-              "CreateDevice",
-              "SetDeviceProperty",
-              "CallDeviceCallback"
-            ]
-          }
+          "*" : ["CreateDevice", "SetDeviceProperty", "CallDeviceCallback"]
         },
         "Bucket" : {
-          "*" : {
-            "action" : [
-              "CreateBucket"
-            ]
-          }
+          "*" : ["CreateBucket"]
         },
         "Plugin" : {
-          "ttn" : {
-            "action" : "*"
-          }
+          "ttn" : "*"
         }
       }
     },
     "ttn_plugin_callback" : {
-      "name" : "Access from TTN network to uplink plugin callback",
+      "name" : "Access from TTN network to Uplink plugin callback",
       "allow" : {
         "Plugin" : {
-          "ttn" : {
-            "action" : [
-              "CallPluginEndpoint"
-            ]
-          }
+          "ttn" : ["CallPluginEndpoint"]
         }
       }
     }
