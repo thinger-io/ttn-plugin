@@ -64,15 +64,6 @@
                             <input type="text" placeholder="Bucket prefix" class="form-control" ng-model="settings.value.auto_bucket_provisioning_prefix"/>
                         </div>
                     </div>
-                    <div class="form-group m-b-xs">
-                        <label><i class="fa fa-lock m-r-xs text-muted"></i>Application Authorization <i class="fa fa-info-circle text-muted" uib-popover="Generate an authorization, so this application can issue requests" popover-trigger="'mouseenter'"></i></label>
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <input type="checkbox" ng-model="token.enabled" ng-change="saveToken(token.enabled)">
-                            </span>
-                            <input type="text" class="form-control" ng-model="show_token.auth"/>
-                        </div>
-                    </div>
                 </uib-tab>
                 <uib-tab heading="Device Properties">
                     <div class="form-group">
