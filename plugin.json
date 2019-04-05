@@ -18,7 +18,7 @@
       "name" : "Access from TTN plugin to thinger.io account",
       "allow" : {
         "Device" : {
-          "*" : ["CreateDevice", "SetDeviceProperty", "CallDeviceCallback"]
+          "*" : ["CreateDevice", "SetDeviceProperty", "UpdateDeviceCallback", "CallDeviceCallback"]
         },
         "Bucket" : {
           "*" : ["CreateBucket"]
