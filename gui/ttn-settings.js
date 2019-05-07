@@ -17,6 +17,7 @@ angular.module('TTNPlugin', [])
             },function error(){
                 $scope.settings = {};
                 $scope.settings.value = {};
+                $scope.settings.value.auto_provision_resources = true;
             });
 
             $scope.plugin.getToken('ttn_plugin_callback').then(function(token) {
@@ -27,8 +28,19 @@ angular.module('TTNPlugin', [])
 
             $scope.save = function(){
                 $scope.save_state = 1;
+
+                // save plugin settings
                 $scope.plugin.setProperty('settings', $scope.settings).then(function(){
-                    $scope.save_state = 2;
+
+                    // send properties to plugin task so it does not require a reboot
+                    $scope.plugin.put('/settings', $scope.settings.value).then(function(){
+                        $scope.save_state = 2;
+                    }, function (error) {
+                        $scope.save_state = 3;
+                        console.error("cannot send settings to plugin task");
+                        console.error(error);
+                    });
+
                 },function(error){
                     $scope.save_state = 3;
                     showError(error);

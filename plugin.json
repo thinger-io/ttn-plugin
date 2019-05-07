@@ -1,6 +1,6 @@
 {
   "name" : "ttn",
-  "version" : "1.0.0",
+  "version" : "1.0.1",
   "description" : "Plugin for handling TTN integration",
   "author" : "Alvaro Luis Bustamante",
   "license" : "MIT",
@@ -39,6 +39,7 @@
   },
   "task" : {
     "type" : "docker",
-    "image" : "thinger/ttn-plugin"
+    "image" : "thinger/ttn-plugin",
+    "port" : 3000
   }
 }

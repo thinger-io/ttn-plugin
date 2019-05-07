@@ -101,6 +101,7 @@ https://www.thethingsnetwork.org/docs/applications/http/
 */
 
 function handleUplink(req, res) {
+    console.log("Uplink call received");
     console.log(req.body);
 
     let device_id = req.body.dev_id;
@@ -195,6 +196,8 @@ app.listen(3000, function () {
         console.log("Read settings:");
         console.log(settings);
     }).catch(function (error) {
+        settings = {};
+        settings.auto_provision_resources = true;
         console.error(error);
     });
 });
