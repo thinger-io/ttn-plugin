@@ -101,7 +101,7 @@ https://www.thethingsnetwork.org/docs/applications/http/
 */
 
 function handleUplink(req, res) {
-    console.log("Uplink call received");
+    console.log("uplink call received");
     console.log(req.body);
 
     let device_id = req.body.dev_id;
@@ -157,14 +157,19 @@ function handleUplink(req, res) {
                 createBucket(device_id).then(function (response) {
                     setDeviceCallback(device_id, device_id).then(function (response) {
                         handleUplink(req, res);
-                    }).catch(function (error) {});
-                }).catch(function (error) {});
-            }).catch(function (error) {});
-
+                    }).catch(function (error) {
+                        console.error(error);
+                    });
+                }).catch(function (error) {
+                    console.error(error);
+                });
+            }).catch(function (error) {
+                console.error(error);
+            });
         } else if (error.request) {
             console.error(error.request);
         } else {
-            console.error(error.message);
+            console.error(error);
         }
     });
 }
