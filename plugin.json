@@ -41,5 +41,10 @@
     "type" : "docker",
     "image" : "thinger/ttn-plugin",
     "port" : 3000
+  },
+  "interface" : {
+    "main" : {
+      "file" : "gui/ttn-settings.js"
+    }
   }
 }
