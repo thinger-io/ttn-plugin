@@ -1,6 +1,6 @@
 'use strict';
 angular.module('TTNPlugin', [])
-.directive('pluginSettings', function(){
+.directive('ttnSettings', function(){
     return {
         restrict: 'EA',
         scope: {
