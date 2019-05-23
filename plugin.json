@@ -11,7 +11,7 @@
   "metadata" : {
     "name" : "The Things Network",
     "description" : "TTN Integration",
-    "image" : "https://user-images.githubusercontent.com/1141353/58242401-0ae24480-7d4f-11e9-9575-13111f78e1a1.png"
+    "image" : "https://user-images.githubusercontent.com/1141353/58242401-0ae24480-7d4f-11e9-9575-13111f78e1a1.png",
     "fa_icon" : "fas fa-cloud",
     "color": "#006DB6"
   },
