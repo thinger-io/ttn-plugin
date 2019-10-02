@@ -12,11 +12,11 @@ const app = express();
 app.use(express.json({strict: false}));
 app.enable('trust proxy');
 
-// configure log-timestamp
-require('log-timestamp');
-
 // initialize development options
 if(DEVELOPMENT){
+    // configure log-timestamp
+    require('log-timestamp');
+
     // allow CORS
     const cors = require('cors');
     app.use(cors({origin: '*'}));
@@ -28,10 +28,10 @@ if(DEVELOPMENT){
         next();
     });
 
-    // serve static files
+    // serve static files fro plugin root
     app.use(express.static('../'));
 
-    // create a local tunnel for serving plugin files without installing
+    // create a local tunnel for serving plugin files without installing on a server
     let localtunnel = require('localtunnel');
 
     let tunnel = localtunnel(3000, {'subdomain': 'ttn-plugin'}, function(err, tunnel) {
