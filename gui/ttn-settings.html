@@ -6,82 +6,187 @@
 <div class="wrapper-md">
     <div class="panel panel-default">
         <div class="panel-heading font-bold">
-            <i class="fa fa-cog m-r-xs"></i> Settings
+            <i class="fa fa-cog m-r-xs"></i> {{ui.selectedDeviceType}} Settings
+            <a href="https://docs.thinger.io/plugins/the-things-network" target="_blank"><i class="far fa-question-circle text-muted pull-right m-t-xs"></i></a>
         </div>
         <div class="panel-body">
-            <form id="form-save-callback" class="form-validation" ng-submit="save()">
+            <form id="form-save-callback" class="form-horizontal form-validation" ng-submit="save()">
                 <uib-tabset class="tab-container m-b-none" ng-disabled="save_state==1">
-                    <uib-tab heading="Uplink Processing">
-                        <div class="form-group">
-                            <label><i class="fa fa-magic m-r-xs text-muted"></i>Auto provision resources <i class="fa fa-info-circle text-muted" uib-popover="Automatically create devices and buckets to store incoming data" popover-trigger="'mouseenter'"></i></label>
-                            <div class="m-t-xs">
-                                <label class="i-switch bg-success">
-                                    <input type="checkbox" ng-model="settings.value.auto_provision_resources">
-                                    <i></i>
-                                </label>
+
+                    <uib-tab heading="Applications">
+
+                        <div class="row wrapper-xs">
+                            <label class="col-sm-2 control-label"><i class="fa fa-cog m-r-xs text-muted"></i>Application Id <i class="fa fa-info-circle text-muted" uib-popover="Select an application to configure its callback properties." popover-trigger="'mouseenter'"></i></label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="type" ng-model="ui.selectedDeviceType">
+                                    <option value="{{deviceType}}" ng-repeat="(deviceType, value) in settings.value">{{deviceType}}</option>
+                                </select>
+                                <button type="button" class="btn btn-sm btn-danger btn-addon m-t-sm m-b" ng-click="removeDeviceType(ui.selectedDeviceType)" ng-show="ui.selectedDeviceType!=='Default'"><i class="fa fa-minus"></i>Remove Application</button>
                             </div>
                         </div>
-                        <div ng-if="settings.value.auto_provision_resources">
-                            <div class="form-group">
-                                <label><i class="fa fa-clock m-r-xs text-muted"></i>Device Connection Timeout <i class="fa fa-info-circle text-muted" uib-popover="Number of minutes without an uplink call to consider the device as disconnected" popover-trigger="'mouseenter'"></i></label>
-                                <input type="number" placeholder="10" class="form-control" ng-model="settings.value.device_connection_timeout"/>
-                            </div>
-                            <div class="form-group">
-                                <label><i class="fa fa-rocket m-r-xs  text-muted"></i>Device Identifier Prefix <i class="fa fa-info-circle text-muted" uib-popover="Specify a prefix (if required), to be set when creating the new device identifier." popover-trigger="'mouseenter'"></i></label>
-                                <input type="text" placeholder="ttn_" class="form-control" ng-model="settings.value.device_id_prefix"/>
-                            </div>
-                            <div class="form-group">
-                                <label><i class="fa fa-database m-r-xs text-muted"></i>Bucket Identifier Prefix <i class="fa fa-info-circle text-muted" uib-popover="Specify a prefix (if required), to be set when creating the new bucket identifier." popover-trigger="'mouseenter'"></i></label>
-                                <input type="text" placeholder="ttn_" class="form-control" ng-model="settings.value.bucket_id_prefix"/>
+
+                        <div class="row wrapper-xs">
+                            <label class="col-sm-2 control-label"><i class="fa fa-rocket m-r-xs  text-muted"></i>Create Application <i class="fa fa-info-circle text-muted" uib-popover="Add new applications to add custom initialization, parsing, etc. It should match the one configured in TTN." popover-trigger="'mouseenter'"></i></label>
+                            <div class="col-sm-10">
+                                <input type="text" placeholder="Application Id" class="form-control" pattern="[A-Za-z0-9_-]{1,32}" ng-model="ui.deviceType"/>
+                                <button type="button" ng-click="createDeviceType(ui.deviceType)" class="btn btn-sm btn-success btn-addon m-t-sm"><i><span class="fa fa-plus"></span></i>Add Application</button>
                             </div>
                         </div>
+
                     </uib-tab>
-                    <uib-tab heading="Device Properties">
-                        <div class="form-group">
-                            <label><i class="fa fa-map-marked m-r-xs text-muted"></i>Update device location <i class="fa fa-info-circle text-muted" uib-popover="Set location property based on the gateway location" popover-trigger="'mouseenter'"></i></label>
-                            <div class="m-t-xs">
+                    <uib-tab heading="Uplink Behaviour">
+
+                        <div class="row wrapper-xs">
+                            <label class="col-sm-2 control-label"><i class="fa fa-magic m-r-xs text-muted"></i>Auto provision resources <i class="fa fa-info-circle text-muted" uib-popover="Automatically create devices and buckets to store incoming data" popover-trigger="'mouseenter'"></i></label>
+                            <div class="m-t-xs col-sm-10">
                                 <label class="i-switch bg-success">
-                                    <input type="checkbox" ng-model="settings.value.update_device_location">
+                                    <input type="checkbox" ng-model="settings.value[ui.selectedDeviceType].auto_provision_resources">
                                     <i></i>
                                 </label>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label><i class="fa fa-microchip m-r-xs text-muted"></i>Save hardware serial <i class="fa fa-info-circle text-muted" uib-popover="Set hardware serial property" popover-trigger="'mouseenter'"></i></label>
-                            <div class="m-t-xs">
-                                <label class="i-switch bg-success">
-                                    <input type="checkbox" ng-model="settings.value.save_hardware_serial">
-                                    <i></i>
-                                </label>
+
+                        <div ng-if="settings.value[ui.selectedDeviceType].auto_provision_resources">
+
+                            <div class="row wrapper-xs">
+                                <label class="col-sm-2 control-label"><i class="fa fa-clock m-r-xs text-muted"></i>Device Connection Timeout <i class="fa fa-info-circle text-muted" uib-popover="Number of minutes without a callback call to consider the device as disconnected" popover-trigger="'mouseenter'"></i></label>
+                                <div class="col-sm-10">
+                                    <input type="number" placeholder="10" class="form-control" ng-model="settings.value[ui.selectedDeviceType].device_connection_timeout"/>
+                                </div>
+                            </div>
+
+                            <div class="row wrapper-xs">
+                                <label class="col-sm-2 control-label"><i class="fa fa-rocket m-r-xs  text-muted"></i>Device Identifier Prefix <i class="fa fa-info-circle text-muted" uib-popover="Specify a prefix (if required), to be set when creating the new device identifier." popover-trigger="'mouseenter'"></i></label>
+                                <div class="col-sm-10">
+                                    <input type="text" placeholder="ttn_" class="form-control" ng-model="settings.value[ui.selectedDeviceType].device_id_prefix"/>
+                                </div>
+                            </div>
+
+                            <div class="row wrapper-xs">
+                                <label class="col-sm-2 control-label"><i class="fa fa-database m-r-xs text-muted"></i>Bucket Identifier Prefix <i class="fa fa-info-circle text-muted" uib-popover="Specify a prefix (if required), to be set when creating the new bucket identifier." popover-trigger="'mouseenter'"></i></label>
+                                <div class="col-sm-10">
+                                    <input type="text" placeholder="ttn_" class="form-control" ng-model="settings.value[ui.selectedDeviceType].bucket_id_prefix"/>
+                                </div>
+                            </div>
+
+                            <div class="row wrapper-xs">
+                                <label class="col-sm-2 control-label"><i class="fa fa-map-marked m-r-xs text-muted"></i>Update device location <i class="fa fa-info-circle text-muted" uib-popover="Set device location based on the gateway location" popover-trigger="'mouseenter'"></i></label>
+                                <div class="col-sm-10 m-t-xs">
+                                    <label class="i-switch bg-success">
+                                        <input type="checkbox" ng-model="settings.value[ui.selectedDeviceType].update_device_location">
+                                        <i></i>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="row wrapper-xs">
+                                <label class="col-sm-2 control-label"><i class="fa fa-list-ul m-r-xs text-muted"></i> Save metadata <i class="fa fa-info-circle text-muted" uib-popover="Store uplink metadata in device property." popover-trigger="'mouseenter'"></i></label>
+                                <div class="col-sm-10 m-t-xs">
+                                    <label class="i-switch bg-success">
+                                        <input type="checkbox" ng-model="settings.value[ui.selectedDeviceType].save_metadata">
+                                        <i></i>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="row wrapper-xs">
+                                <label class="col-sm-2 control-label"><i class="fas fa-cloud-download-alt m-r-xs text-muted"></i>Initialize Downlink Data <i class="fa fa-info-circle text-muted" uib-popover="Specify a default downlink data to be stored in the device. It can be any JSON document like a string, object, or array." popover-trigger="'mouseenter'"></i></label>
+                                <div class="col-sm-10">
+                                    <div ui-ace="{
+                                    mode: 'json',
+                                    useWrapMode : true,
+                                    showGutter: true
+                                    }" style="height: 150px; border: 1px solid lightgray;" ng-model="settings.value[ui.selectedDeviceType].device_downlink_data"></div>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label><i class="fa fa-download m-r-xs text-muted"></i>Save downlink URL <i class="fa fa-info-circle text-muted" uib-popover="Set downlink URL property" popover-trigger="'mouseenter'"></i></label>
-                            <div class="m-t-xs">
-                                <label class="i-switch bg-success">
-                                    <input type="checkbox" ng-model="settings.value.save_downlink_url">
-                                    <i></i>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fa fa-list-ul m-r-xs text-muted"></i> Save metadata <i class="fa fa-info-circle text-muted" uib-popover="Set metadata property" popover-trigger="'mouseenter'"></i></label>
-                            <div class="m-t-xs">
-                                <label class="i-switch bg-success">
-                                    <input type="checkbox" ng-model="settings.value.save_metadata">
-                                    <i></i>
-                                </label>
-                            </div>
-                        </div>
+
                     </uib-tab>
-                    <uib-tab heading="TTN Integration">
-                        <div class="font-bold m-b-xs"><i class="fa fa-link"></i> Method</div>
-                        <pre class="bg-black text-white">POST</pre>
-                        <div class="font-bold m-b-xs"><i class="fa fa-link"></i> URL</div>
+
+                    <uib-tab heading="Payload Processing">
+                        <div class="row wrapper-xs">
+                            <label class="col-sm-2 control-label"><i class="fa fa-cog m-r-xs text-muted"></i>Payload Processing <i class="fa fa-info-circle text-muted" uib-popover="Run a custom callback to process uplink and downlink data" popover-trigger="'mouseenter'"></i></label>
+                            <div class="m-t-xs col-sm-10">
+                                <label class="i-switch bg-success">
+                                    <input type="checkbox" ng-model="settings.value[ui.selectedDeviceType].callback_processing">
+                                    <i></i>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div ng-if="settings.value[ui.selectedDeviceType].callback_processing">
+                            <div class="row wrapper-xs">
+                                <label class="col-sm-2 control-label"><i class="fa fa-code m-r-xs text-muted"></i>Code <i class="fa fa-info-circle text-muted" uib-popover="Declare functions for uplink or downlink processing" popover-trigger="'mouseenter'"></i></label>
+                                <div class="col-sm-10">
+                                    <div ui-ace="{
+                                  mode: 'javascript',
+                                  useWrapMode : true,
+                                  showGutter: true
+                                }" style="height: 300px; border: 1px solid lightgray;" ng-model="settings.value[ui.selectedDeviceType].callback_code"></div>
+                                </div>
+                            </div>
+
+                            <div class="row wrapper-xs">
+                                <label class="col-sm-2 control-label"><i class="fa fa-flask m-r-xs text-muted"></i>Test Payload Processor <i class="fa fa-info-circle text-muted" uib-popover="Execute the callback to test your custom parsing code" popover-trigger="'mouseenter'"></i></label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="type" ng-model="selected_callback" required>
+                                        <option value="uplink">Uplink</option>
+                                        <option value="downlink">Downlink</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row wrapper-xs">
+                                <div class="col-sm-2"></div>
+
+                                <div class="col-sm-5">
+                                    <div class="m-b-xs">Callback input (JSON)</div>
+                                    <div ui-ace="{
+                                  mode: 'json',
+                                  useWrapMode : true,
+                                  showGutter: true
+                                }" style="height: 200px; border: 1px solid lightgray;" ng-model="settings.value[ui.selectedDeviceType].callback_data[selected_callback]"></div>
+                                </div>
+                                <div class="col-sm-5">
+                                    <div class="m-b-xs">Callback output (JSON)</div>
+                                    <div ui-ace="{
+                                  mode: 'json',
+                                  useWrapMode : true,
+                                  showGutter: true
+                                }" style="height: 200px; border: 1px solid lightgray;" ng-model="callback_result" readonly></div>
+                                </div>
+                            </div>
+
+                            <div class="row wrapper-xs">
+                                <div class="col-sm-2"></div>
+                                <div class="col-sm-10">
+                                    <button type="button" class="btn btn-info btn-addon" ng-click="run_callback(selected_callback, settings.value[ui.selectedDeviceType].callback_data[selected_callback])" ng-disabled="fetch_error || call_state==1"><i><span ng-class="{'fas fa-terminal': call_state!=1, 'fa fa-spinner fa-pulse' : call_state==1}"></span></i>Test {{selected_callback}}</button>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </uib-tab>
+
+                    <uib-tab heading="TTN Uplink">
+                        <div class="font-bold m-b-xs"><i class="fa fa-link"></i> Endpoint URL</div>
                         <pre class="bg-black text-white">{{plugin.taskUrl}}/uplink</pre>
+                        <div class="font-bold m-b-xs"><i class="fa fa-cog"></i> HTTP Method</div>
+                        <pre class="bg-black text-white">POST</pre>
                         <div class="font-bold m-b-xs"><i class="fa fa-lock"></i> Authorization Header</div>
-                        <pre class="bg-black text-white">Bearer {{ttn_plugin_callback}} </pre>
+                        <pre class="bg-black text-white">Bearer {{ttn_plugin_callback}}</pre>
                     </uib-tab>
+
+                    <uib-tab heading="TTN Downlink">
+                        <div class="font-bold m-b-xs"><i class="fa fa-link"></i> Endpoint URL</div>
+                        <pre class="bg-black text-white">{{plugin.taskUrl}}/downlink/:deviceId</pre>
+                        <div class="font-bold m-b-xs"><i class="fa fa-cog"></i> HTTP Method</div>
+                        <pre class="bg-black text-white">POST</pre>
+                        <div class="font-bold m-b-xs"><i class="fa fa-lock"></i> Authorization Header</div>
+                        <pre class="bg-black text-white">Bearer {{ttn_plugin_callback}}</pre>
+                    </uib-tab>
+
                 </uib-tabset>
             </form>
             <pre class="alert alert-danger m-t m-b-none" ng-show="save_state==3"><strong><i class="fas fa-thumbs-down"></i> Ooops!</strong> Cannot process your request. Error {{error_code}} ({{error_message}})</pre>
