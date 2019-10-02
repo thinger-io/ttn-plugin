@@ -272,6 +272,7 @@ async function handleDeviceCallback(deviceId, deviceType, payload, sourceIP, tim
                     // create device, bucket, and set callback
                     let realBucketId = getBucketId(deviceId, settings);
                     thinger.createHTTPDevice(realDeviceId, 'Auto provisioned TTN Device')
+                        .then(() => thinger.setDeviceDownlinkData(realDeviceId, getDefaultDownlink(settings)))
                         .then(() => thinger.createBucket(realBucketId, realBucketId, 'Auto provisioned TTN Bucket', {source: 'api'}))
                         .then(() => thinger.setDeviceCallback(realDeviceId, {write_bucket: realBucketId}, {timeout: getDeviceTimeout(settings)}))
                         .then(() => updateDeviceProperties(realDeviceId, payload, settings))
