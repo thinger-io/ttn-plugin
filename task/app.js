@@ -9,7 +9,7 @@ const DEVELOPMENT = process.env.THINGER_PLUGIN_DEVELOPMENT==='1';
 // configure express
 const express = require('express');
 const app = express();
-app.use(express.json({strict: false}));
+app.use(express.json({strict: false, limit: '8mb'}));
 app.enable('trust proxy');
 
 // initialize development options
